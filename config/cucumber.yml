@@ -1,0 +1,12 @@
+# config/cucumber.yml
+
+<% common_path = "-r features/common/support -r features/common/strings -r features/common/modules -r features/tests/step_definitions -r features/BasePages/Default -r features/tests/acceptance_tests" %>
+
+<% common_settings_ios = " -f 'Slowhandcuke::Formatter' PLATFORM=ios -f json -o features/report/report.json --tag ~@android_only" %>
+<% common_settings_android = " -f 'Slowhandcuke::Formatter'  PLATFORM=android -f json -o features/report/report.json --tag ~@ios_only " %>
+
+<% ios_specific_path = " -r features/ios/support -r features/ios/modules " %>
+<% android_specific_path = "-r features/android/support -r features/android/modules" %>
+
+ios: <%= common_path %>  <%= common_settings_ios %> <%= ios_specific_path %>
+android: <%= common_path %>  <%= common_settings_android %> <%= android_specific_path %>

@@ -1,0 +1,46 @@
+#!/usr/bin/expect
+#!/bin/sh
+
+set arg1 [lindex $argv 0]
+
+set timeout 20
+spawn ti clean
+expect {
+    "Project cleaned successfully" { puts "STEP 1 DONE" }
+    timeout { puts "failed to find text"; exit 1 }
+}
+
+	spawn ti build -p ios -b;
+	puts "expect.exp - Phone build"
+
+set timeout 400
+expect {
+    "Initiating Xcode pre-compile" { puts "STEP 2 DONE" }
+    timeout { puts "*** FAILED TO FIND - Initiating Xcode pre-compile "; exit 1 }
+}
+
+expect {
+    "Project built successfully" { puts "STEP 3 DONE" }
+    timeout { puts "*** FAILED TO FIND - Project built successfully "; exit 1 }
+}
+
+set timeout 20
+spawn ti calabash —platform=iphone
+expect "Please answer yes (y) or no (n)"  { send "n\r" }
+
+set timeout 200
+expect {
+    "Default target:" { send "\r" }
+    timeout { puts "failed to find text"; exit 1 }
+}
+
+expect {
+    "Setup done" { puts "STEP 4 DONE" }
+ timeout { puts "failed to find text: Setup done"; exit 1}
+}
+
+
+expect {
+ "** BUILD SUCCEEDED **" {}
+ timeout { puts "failed to find text"; exit 1 }
+}
